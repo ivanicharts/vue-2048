@@ -1,6 +1,9 @@
 <template>
-  <div class="cell-container" :class="{ active: opts.value  }">
-    {{ opts.value }}
+  <div 
+    class="cell-container" 
+    :class="{ active: opts.value, [`cell-${opts.value}`]: opts.value }"
+    :style="{ transform: `translate(${ opts.x * size + opts.x * margin }px, ${ opts.y * size + opts.y * margin }px)` }">
+      {{ opts.value }}
   </div>
 </template>
 
@@ -12,7 +15,11 @@ export default {
       default: () => ({}),
       type: Object
     }
-  }
+  },
+  data: () => ({
+    size: 75,
+    margin: 4
+  })
 }
 </script>
 
@@ -29,8 +36,23 @@ export default {
 
   .cell-container.active {
     position: absolute;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .cell {
+    /* display: block; */
+    width: 100%;
+    height: 100%;
+  }
+
+  .cell-2 {
+    background-color: #0FE8E2;
+  }
+
+  .cell-4 {
+    background-color: #ED5471;
   }
 </style>

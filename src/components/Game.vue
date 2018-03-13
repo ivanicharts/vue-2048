@@ -1,11 +1,16 @@
 <template>
-  <div class="game-container">
+  <div @click="f.moveRight()" class="game-container">
     <div class="game-info">
       The Game
     </div>
-    <div class="game-field">
-      <div class="row" v-for="n in fieldSize" :key="n">
-        <Cell v-for="x in fieldSize" :key="x + n"/>
+    <div class="game-container">
+      <div class="active-cell-container">
+        <Cell v-for="cell in field" :key="'' + cell.x + cell.y" :opts="cell" />
+      </div>
+      <div class="game-bg">
+        <div class="row" v-for="n in fieldSize" :key="n">
+          <Cell v-for="x in fieldSize" :key="x + n"/>
+        </div>
       </div>
     </div>
   </div>
@@ -13,14 +18,25 @@
 
 <script>
 import Cell from './Cell'
-import { createField } from '../helpers/Field.js'
+import { Field } from '../helpers/Field.js'
 
-console.log('field', createField())
+const field = new Field();
+console.log('field', field.getField())
 
 export default {
   name: 'game-2048',
   components: { Cell },
-  data: () => ({ fieldSize: 4 })
+  data: () => ({
+    field: field.getField() , 
+    fieldSize: 4,
+    f: field
+  })
+
+  // computed: {
+  //   field: () => {
+  //     this.field = 
+  //   }
+  // }
 }
 </script>
 
@@ -28,10 +44,19 @@ export default {
 <style scoped>
   .game-container {
     max-width: 316px;
-    margin: 50px auto;    
+    margin: 50px auto;  
+    position: relative;  
   }
 
   .game-info {
     margin: 40px 0;
+  }
+
+  .game-bg {
+    position: relative;
+  }
+
+  .active-cell-container {
+    position: absolute;
   }
 </style>
