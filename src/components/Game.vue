@@ -5,7 +5,7 @@
     </div>
     <div class="game-container">
       <div class="active-cell-container">
-        <Cell v-for="cell in field" :key="cell.key" :opts="cell" />
+        <Cell v-for="cell in field" :key="cell.key" :opts="cell" :onTransitionEnd="f.deleteUnnecessaryCells.bind(f)" />
       </div>
       <div class="game-bg">
         <div class="row" v-for="n in fieldSize" :key="n">
@@ -30,7 +30,13 @@ export default {
     field: field.getField() , 
     fieldSize: 4,
     f: field
-  })
+  }),
+
+  methods: {
+    deleteCells() {
+      console.log('deleted')
+    }
+  }
 
   // computed: {
   //   field: () => {

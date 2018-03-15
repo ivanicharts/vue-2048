@@ -27,19 +27,22 @@ export class Field {
     // this.field = [{ value: 2, x: 0, y: 0 }, { value: 4, x: 2, y: 2}]
   }
 
-  deleteUnnecessary() {
-    const deleteMap = {};
-    this.toDelete.forEach(cell => (
-      cell.mergeTarget.value += cell.mergeTarget.value,
-      deleteMap[cell.key] = 1
-    ));
-    this.toDelete = [];
-    this.output.forEach((cell, idx) => {
-      if (cell.key in deleteMap) {
-        console.log('deleted');
-        // this.output.splice(idx, 1);
-      }
-    });
+  deleteUnnecessaryCells() {
+    console.log('this', this)
+    if (this.toDelete.length) {
+      const deleteMap = {};
+      this.toDelete.forEach(cell => (
+        cell.mergeTarget.value *= 2,
+        deleteMap[cell.key] = 1
+      ));
+      this.toDelete = [];
+      this.output.forEach((cell, idx) => {
+        if (cell.key in deleteMap) {
+          console.log('deleted');
+          // this.output.splice(idx, 1);
+        }
+      });
+    }
     // this.output = this.output.filter(c => deleteMap.has(c.key));
   }
 
@@ -78,7 +81,7 @@ export class Field {
       }
     }
 
-    this.deleteUnnecessary();
+    // this.deleteUnnecessary();
     console.log('field', field, this.toDelete);
   }
 

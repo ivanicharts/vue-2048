@@ -1,5 +1,6 @@
 <template>
   <div 
+    @transitionend="transitionEndCb(opts)"
     class="cell-container" 
     :class="{ active: opts.value, [`cell-${opts.value}`]: opts.value }"
     :style="{ transform: `translate(${ opts.x * size + opts.x * margin }px, ${ opts.y * size + opts.y * margin }px)` }">
@@ -14,12 +15,24 @@ export default {
     opts: {
       default: () => ({}),
       type: Object
+    },
+    onTransitionEnd: {
+      default: () => () => void 0,
+      type: Function
     }
   },
   data: () => ({
     size: 75,
     margin: 4
-  })
+  }),
+  methods: {
+    transitionEndCb(cellOpts) {
+      // console.log('asasdasdasdasdd', args, this)
+      if (cellOpts.mergeTarget) {
+        this.onTransitionEnd();
+      }
+    }
+  }
 }
 </script>
 
@@ -33,7 +46,7 @@ export default {
     background-color: #393d6d;
     margin: 0 2px;
     display: inline-block;
-    transition: transform .3s;
+    transition: transform 1.3s;
     transform: translate(0, 0);
   }
 
