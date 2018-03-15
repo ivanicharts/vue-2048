@@ -46,7 +46,7 @@ export default {
     background-color: #393d6d;
     margin: 0 2px;
     display: inline-block;
-    transition: transform 1.3s;
+    transition: transform .3s, background-color .2s;
     transform: translate(0, 0);
   }
 
