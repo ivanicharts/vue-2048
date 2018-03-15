@@ -1,7 +1,7 @@
 <template>
   <div 
     @transitionend="transitionEndCb(opts)"
-    class="cell-container" 
+    class="cell-container pulse" 
     :class="{ active: opts.value, [`cell-${opts.value}`]: opts.value }"
     :style="{ transform: `translate(${ opts.x * size + opts.x * margin }px, ${ opts.y * size + opts.y * margin }px)` }">
       {{ opts.value }}
