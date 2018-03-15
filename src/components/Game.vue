@@ -5,7 +5,7 @@
     </div>
     <div class="game-container">
       <div class="active-cell-container">
-        <Cell v-for="cell in field" :key="cell.value" :opts="cell" />
+        <Cell v-for="cell in field" :key="cell.key" :opts="cell" />
       </div>
       <div class="game-bg">
         <div class="row" v-for="n in fieldSize" :key="n">
