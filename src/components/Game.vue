@@ -1,5 +1,13 @@
 <template>
-  <div @click="f.moveRight()" class="game-container">
+  <div
+    tabindex="0"
+    ref="gameField"
+    @keydown.right="f.moveRight()" 
+    @keydown.left="f.moveLeft()" 
+    @keydown.up="f.moveUp()" 
+    @keydown.down="f.moveDown()" 
+    @click="f.moveUp()" 
+    class="game-container">
     <div class="game-info">
       The Game
     </div>
@@ -36,6 +44,10 @@ export default {
     deleteCells() {
       console.log('deleted')
     }
+  },
+
+  mounted() {
+    console.log('ref', this.$refs.gameField.focus())
   }
 
   // computed: {

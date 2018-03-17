@@ -46,7 +46,7 @@ export default {
     background-color: #393d6d;
     margin: 0 2px;
     display: inline-block;
-    transition: transform .3s, background-color .2s;
+    transition: transform .15s, background-color .1s;
     transform: translate(0, 0);
   }
 
@@ -74,5 +74,13 @@ export default {
 
   .cell-8 {
     background-color: #FFB349;
+  }
+
+  .cell-16 {
+    background-color: #9b59b6;
+  }
+
+  .cell-32 {
+    background-color: #e67e22;
   }
 </style>
