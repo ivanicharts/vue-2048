@@ -2,13 +2,12 @@
   <div
     tabindex="0"
     ref="gameField"
-    @keydown.right="moveRight()" 
-    @keydown.left="moveLeft()" 
-    @keydown.up="moveUp()" 
-    @keydown.down="moveDown()" 
-    @click="moveUp()" 
+    @keydown.right="f.moveRight()" 
+    @keydown.left="f.moveLeft()" 
+    @keydown.up="f.moveUp()" 
+    @keydown.down="f.moveDown()" 
     class="game-container">
-    <div class="game-info">
+    <div class="game-info" @click="reset">
       The Game {{ state.score }}
     </div>
     <div class="game-container">
@@ -32,6 +31,8 @@ import { Field } from '../helpers/Field.js'
 const field = new Field();
 console.log('field', field.getField())
 
+const throttleTime = 400;
+
 export default {
   name: 'game-2048',
   components: { Cell },
@@ -46,10 +47,17 @@ export default {
     deleteCells() {
       console.log('deleted')
     },
-    moveRight: throttle(field.moveRight.bind(field), 400),
-    moveLeft: throttle(field.moveLeft.bind(field), 400),
-    moveUp: throttle(field.moveUp.bind(field), 400),
-    moveDown: throttle(field.moveDown.bind(field), 400),
+    reset() {
+      const newField = new Field();
+
+      this.field = newField.getField();
+      this.state = newField.getState();
+      this.f = newField;
+    }
+    // moveRight: throttle(field.moveRight.bind(field), throttleTime),
+    // moveLeft: throttle(field.moveLeft.bind(field), throttleTime),
+    // moveUp: throttle(field.moveUp.bind(field), throttleTime),
+    // moveDown: throttle(field.moveDown.bind(field), throttleTime),
   },
 
   mounted() {

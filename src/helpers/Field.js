@@ -3,7 +3,8 @@
 
 // export const createField = size => 
 
-import { random } from 'lodash';
+import { random, throttle } from 'lodash';
+const throttleTime = 400;
 
 const switchCell = ({ field, rowIndex: i, colFromIndex: p, colToIndex, cell }) => {
   const tmp = field[i][p];
@@ -26,18 +27,11 @@ export class Field {
     
     this.field[0][0] = { value: 2, x: 0, y: 0, key: this.ids.pop() };
     this.field[0][2] = { value: 4, x: 2, y: 0, key: this.ids.pop() };
-    // this.field[0][3] = { value: 8, x: 3, y: 0, key: this.ids.pop() };
-    // this.field[0][1] = { value: 2, x: 1, y: 0, key: this.ids.pop() };
     
-    // this.field[1][0] = { value: 2, x: 0, y: 1, key: this.ids.pop() };
-    // this.field[1][1] = { value: 2, x: 1, y: 1, key: this.ids.pop() };
-    // this.field[1][2] = { value: 2, x: 2, y: 1, key: this.ids.pop() };
-    // this.field[1][3] = { value: 2, x: 3, y: 1, key: this.ids.pop() };
-    
-    // this.field[2][0] = { value: 4, x: 0, y: 2, key: this.ids.pop() };
-
-    // this.field[3][0] = { value: 4, x: 0, y: 3, key: this.ids.pop() };
-    // this.field[3][3] = { value: 4, x: 3, y: 3, key: this.ids.pop() };
+    this.moveDown = throttle(this._moveDown, throttleTime);
+    this.moveUp = throttle(this._moveUp, throttleTime);
+    this.moveLeft = throttle(this._moveLeft, throttleTime);
+    this.moveRight = throttle(this._moveRight, throttleTime);
 
     this.output = this.field
       .reduce((acc, e) => (acc.push(...e), acc), [])
@@ -66,14 +60,14 @@ export class Field {
       // console.log(Object.assign({}, this.field[newCell.y][newCell.x]), this.field[newCell.y][newCell.x].value)
       this.field[newCell.y][newCell.x] = newCell;
       // console.log('new', newCell);
-      console.log('availableSlots', availableSlots.map(({ x, y }) => [y, x]))
+      // console.log('availableSlots', availableSlots.map(({ x, y }) => [y, x]))
       this.output.push(newCell);
       this.state.score += value; 
     }
   }
 
   deleteUnnecessaryCells() {
-    console.log('transition end')
+    // console.log('transition end')
 
     if (true) {
       // const deleteMap = {};
@@ -82,8 +76,6 @@ export class Field {
       this.toDelete.forEach(cell => (
         cell.mergeTarget.value *= 2,
         deleteMap[cell.key] = 1
-        // this.state.score += cell.mergeTarget.value
-        // console.log('to delete', cell.key)
       ));
       this.toDelete = [];
       this.output.forEach((cell, idx) => {
@@ -99,8 +91,8 @@ export class Field {
     // this.output = this.output.filter(c => deleteMap.has(c.key));
   }
 
-  moveRight() {
-    // console.log('move right', this.ids);
+  _moveRight() {
+    console.log('move right');
     let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
@@ -148,8 +140,8 @@ export class Field {
   }
 
 
-  moveLeft() {
-    // console.log('move right', this.ids);
+  _moveLeft() {
+    console.log('move right', this.ids);
     let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
@@ -190,8 +182,8 @@ export class Field {
     // console.log('field', field, this.toDelete);
   }
 
-  moveUp() {
-    // console.log('move up', this.ids);
+  _moveUp() {
+    console.log('move up');
     let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
@@ -206,7 +198,7 @@ export class Field {
             !next.wasMergedOnThisTurn 
           ) {
             p--;
-            console.log('was switched')
+            // console.log('was switched')
             wasMoved = true;
             if (next && next.value === cell.value) {
               cell.mergeTarget = next;
@@ -233,8 +225,9 @@ export class Field {
     // console.log('field', field.map(e => e.map(d => d.key)), this.toDelete, this.output.map(c => Object.assign({}, c)));
   }
 
-  moveDown() {
-    // console.log('move down', this.ids);
+  // moveDown() {  }
+  _moveDown() {
+    console.log('move down');
     let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
