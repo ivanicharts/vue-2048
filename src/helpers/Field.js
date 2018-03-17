@@ -14,7 +14,7 @@ const switchCell = ({ field, rowIndex: i, colFromIndex: p, colToIndex, cell }) =
 export class Field {
 
   constructor(size = 4) {
-    // super();
+    this.state = { score: 6 };
     this.toDelete = [];
     this.size = size;
     this.field = Array.apply(null, { length: size })
@@ -68,6 +68,7 @@ export class Field {
       // console.log('new', newCell);
       console.log('availableSlots', availableSlots.map(({ x, y }) => [y, x]))
       this.output.push(newCell);
+      this.state.score += value; 
     }
   }
 
@@ -81,6 +82,7 @@ export class Field {
       this.toDelete.forEach(cell => (
         cell.mergeTarget.value *= 2,
         deleteMap[cell.key] = 1
+        // this.state.score += cell.mergeTarget.value
         // console.log('to delete', cell.key)
       ));
       this.toDelete = [];
@@ -276,9 +278,10 @@ export class Field {
 
   getField() {
     return this.output;
-    // return this.field
-    //   .reduce((acc, e) => (acc.push(...e), acc), [])
-    //   .filter(e => e.value);
+  }
+
+  getState() {
+    return this.state;
   }
 
   resetMergedFlags() {

@@ -2,14 +2,14 @@
   <div
     tabindex="0"
     ref="gameField"
-    @keydown.right="f.moveRight()" 
-    @keydown.left="f.moveLeft()" 
-    @keydown.up="f.moveUp()" 
-    @keydown.down="f.moveDown()" 
-    @click="f.moveUp()" 
+    @keydown.right="moveRight()" 
+    @keydown.left="moveLeft()" 
+    @keydown.up="moveUp()" 
+    @keydown.down="moveDown()" 
+    @click="moveUp()" 
     class="game-container">
     <div class="game-info">
-      The Game
+      The Game {{ state.score }}
     </div>
     <div class="game-container">
       <div class="active-cell-container">
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { throttle } from 'lodash'
 import Cell from './Cell'
 import { Field } from '../helpers/Field.js'
 
@@ -35,7 +36,8 @@ export default {
   name: 'game-2048',
   components: { Cell },
   data: () => ({
-    field: field.getField() , 
+    state: field.getState(),
+    field: field.getField(), 
     fieldSize: 4,
     f: field
   }),
@@ -43,7 +45,11 @@ export default {
   methods: {
     deleteCells() {
       console.log('deleted')
-    }
+    },
+    moveRight: throttle(field.moveRight.bind(field), 400),
+    moveLeft: throttle(field.moveLeft.bind(field), 400),
+    moveUp: throttle(field.moveUp.bind(field), 400),
+    moveDown: throttle(field.moveDown.bind(field), 400),
   },
 
   mounted() {
