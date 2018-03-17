@@ -40,25 +40,31 @@ export class Field {
     this.output = this.field
       .reduce((acc, e) => (acc.push(...e), acc), [])
       .filter(e => e.value);
+
+    this.deleteMap = {};
     // this.field[0][3] = { value: 8, x: 3, y: 0 };
     // this.field = [{ value: 2, x: 0, y: 0 }, { value: 4, x: 2, y: 2}]
   }
 
   deleteUnnecessaryCells() {
-    if (this.toDelete.length) {
-      const deleteMap = {};
+    console.log('transition end')
+
+    if (true) {
+      // const deleteMap = {};
+      const deleteMap = this.deleteMap;
       console.log('this', deleteMap, this.output.map(e => e.key))
       this.toDelete.forEach(cell => (
         cell.mergeTarget.value *= 2,
         deleteMap[cell.key] = 1,
-        console.log('to delete', Object.assign({}, cell))
+        console.log('to delete', cell.key)
       ));
       this.toDelete = [];
       this.output.forEach((cell, idx) => {
-        if (cell.key in deleteMap) {
+        if (deleteMap[cell.key]) {
           console.log('deleted', cell.key);
           this.ids.push(cell.key);
           this.output.splice(idx, 1);
+          deleteMap[cell.key] = 0;
         }
       });
     }
@@ -191,7 +197,7 @@ export class Field {
 
     // this.deleteUnnecessary();
     this.resetMergedFlags();
-    console.log('field', field, this.toDelete);
+    console.log('field', field.map(e => e.map(d => d.key)), this.toDelete, this.output.map(c => Object.assign({}, c)));
   }
 
   moveDown() {
