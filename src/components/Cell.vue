@@ -2,7 +2,11 @@
   <div 
     @transitionend="transitionEndCb(opts)"
     class="cell-container pulse" 
-    :class="{ active: opts.value, [`cell-${opts.value}`]: opts.value }"
+    :class="{ 
+      ['show-in']: opts.isNew,
+      active: opts.value, 
+      [`cell-${opts.value}`]: opts.value 
+    }"
     :style="{ transform: `translate(${ opts.x * size + opts.x * margin }px, ${ opts.y * size + opts.y * margin }px)` }">
       {{ opts.value }}
   </div>
@@ -50,6 +54,18 @@ export default {
     transform: translate(0, 0);
   }
 
+  .show-in {
+    opacity: 0;
+    animation: show-in 1s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes show-in {
+    from { opacity: 0; }
+    to { opacity: 1 }
+  }
+
   .cell-container.active {
     position: absolute;
     z-index: 1;
@@ -82,5 +98,25 @@ export default {
 
   .cell-32 {
     background-color: #e67e22;
+  }
+
+  .cell-64 {
+    background-color: #2ecc71;
+  }
+
+  .cell-128 {
+    background-color: #1abc9c;
+  }
+
+  .cell-256 {
+    background-color: #3498db;
+  }
+
+  .cell-512 {
+    background-color: #34495e;
+  }
+
+  .cell-1024 {
+    background-color: #f1c40f;
   }
 </style>

@@ -3,6 +3,8 @@
 
 // export const createField = size => 
 
+import { random } from 'lodash';
+
 const switchCell = ({ field, rowIndex: i, colFromIndex: p, colToIndex, cell }) => {
   const tmp = field[i][p];
   field[i][p] = cell;
@@ -24,18 +26,18 @@ export class Field {
     
     this.field[0][0] = { value: 2, x: 0, y: 0, key: this.ids.pop() };
     this.field[0][2] = { value: 4, x: 2, y: 0, key: this.ids.pop() };
-    this.field[0][3] = { value: 8, x: 3, y: 0, key: this.ids.pop() };
-    this.field[0][1] = { value: 2, x: 1, y: 0, key: this.ids.pop() };
+    // this.field[0][3] = { value: 8, x: 3, y: 0, key: this.ids.pop() };
+    // this.field[0][1] = { value: 2, x: 1, y: 0, key: this.ids.pop() };
     
-    this.field[1][0] = { value: 2, x: 0, y: 1, key: this.ids.pop() };
-    this.field[1][1] = { value: 2, x: 1, y: 1, key: this.ids.pop() };
-    this.field[1][2] = { value: 2, x: 2, y: 1, key: this.ids.pop() };
-    this.field[1][3] = { value: 2, x: 3, y: 1, key: this.ids.pop() };
+    // this.field[1][0] = { value: 2, x: 0, y: 1, key: this.ids.pop() };
+    // this.field[1][1] = { value: 2, x: 1, y: 1, key: this.ids.pop() };
+    // this.field[1][2] = { value: 2, x: 2, y: 1, key: this.ids.pop() };
+    // this.field[1][3] = { value: 2, x: 3, y: 1, key: this.ids.pop() };
     
-    this.field[2][0] = { value: 4, x: 0, y: 2, key: this.ids.pop() };
+    // this.field[2][0] = { value: 4, x: 0, y: 2, key: this.ids.pop() };
 
-    this.field[3][0] = { value: 4, x: 0, y: 3, key: this.ids.pop() };
-    this.field[3][3] = { value: 4, x: 3, y: 3, key: this.ids.pop() };
+    // this.field[3][0] = { value: 4, x: 0, y: 3, key: this.ids.pop() };
+    // this.field[3][3] = { value: 4, x: 3, y: 3, key: this.ids.pop() };
 
     this.output = this.field
       .reduce((acc, e) => (acc.push(...e), acc), [])
@@ -46,22 +48,46 @@ export class Field {
     // this.field = [{ value: 2, x: 0, y: 0 }, { value: 4, x: 2, y: 2}]
   }
 
+  createRandomCell() {
+    const value = random(1, 2) * 2;
+    const availableSlots = this.field.reduce((acc, row, y) => {
+      acc.push(...row
+        .map((cell, x) => ({ x, y, value: cell.value }))
+        .filter(cell => !cell.value)
+      );
+      return acc;
+    }, []);
+    if (availableSlots.length) {
+      const pos = random(0, availableSlots.length - 1);
+      const newCell = availableSlots[pos];
+      newCell.value = value;
+      newCell.key = this.ids.pop();
+      newCell.isNew = true;
+      // console.log(Object.assign({}, this.field[newCell.y][newCell.x]), this.field[newCell.y][newCell.x].value)
+      this.field[newCell.y][newCell.x] = newCell;
+      // console.log('new', newCell);
+      console.log('availableSlots', availableSlots.map(({ x, y }) => [y, x]))
+      this.output.push(newCell);
+    }
+  }
+
   deleteUnnecessaryCells() {
     console.log('transition end')
 
     if (true) {
       // const deleteMap = {};
       const deleteMap = this.deleteMap;
-      console.log('this', deleteMap, this.output.map(e => e.key))
+      // console.log('this', deleteMap, this.output.map(e => e.key))
       this.toDelete.forEach(cell => (
         cell.mergeTarget.value *= 2,
-        deleteMap[cell.key] = 1,
-        console.log('to delete', cell.key)
+        deleteMap[cell.key] = 1
+        // console.log('to delete', cell.key)
       ));
       this.toDelete = [];
       this.output.forEach((cell, idx) => {
+        cell.isNew = false;
         if (deleteMap[cell.key]) {
-          console.log('deleted', cell.key);
+          // console.log('deleted', cell.key);
           this.ids.push(cell.key);
           this.output.splice(idx, 1);
           deleteMap[cell.key] = 0;
@@ -72,8 +98,8 @@ export class Field {
   }
 
   moveRight() {
-    console.log('move right', this.ids);
-
+    // console.log('move right', this.ids);
+    let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
       // console.log('l')
@@ -89,7 +115,7 @@ export class Field {
             !next.wasMergedOnThisTurn 
           ) {
             p++;
-            
+            wasMoved = true;            
             if (next && next.value === cell.value) {
               cell.mergeTarget = next;
               next.wasMergedOnThisTurn = true;
@@ -112,15 +138,17 @@ export class Field {
       }
     }
 
+    if (wasMoved) this.createRandomCell();
     // this.deleteUnnecessary();
     this.resetMergedFlags();
-    console.log('field', field, this.toDelete);
+    // this.createRandomCell();
+    // console.log('field', field, this.toDelete);
   }
 
 
   moveLeft() {
-    console.log('move right', this.ids);
-
+    // console.log('move right', this.ids);
+    let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
@@ -134,7 +162,7 @@ export class Field {
             !next.wasMergedOnThisTurn 
           ) {
             p--;
-            
+            wasMoved = true;            
             if (next && next.value === cell.value) {
               cell.mergeTarget = next;
               next.wasMergedOnThisTurn = true;
@@ -154,14 +182,15 @@ export class Field {
       }
     }
 
+    if (wasMoved) this.createRandomCell();
     // this.deleteUnnecessary();
     this.resetMergedFlags();
-    console.log('field', field, this.toDelete);
+    // console.log('field', field, this.toDelete);
   }
 
   moveUp() {
-    console.log('move up', this.ids);
-
+    // console.log('move up', this.ids);
+    let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
@@ -175,7 +204,8 @@ export class Field {
             !next.wasMergedOnThisTurn 
           ) {
             p--;
-            
+            console.log('was switched')
+            wasMoved = true;
             if (next && next.value === cell.value) {
               cell.mergeTarget = next;
               next.wasMergedOnThisTurn = true;
@@ -196,13 +226,14 @@ export class Field {
     }
 
     // this.deleteUnnecessary();
+    if (wasMoved) this.createRandomCell();
     this.resetMergedFlags();
-    console.log('field', field.map(e => e.map(d => d.key)), this.toDelete, this.output.map(c => Object.assign({}, c)));
+    // console.log('field', field.map(e => e.map(d => d.key)), this.toDelete, this.output.map(c => Object.assign({}, c)));
   }
 
   moveDown() {
-    console.log('move down', this.ids);
-
+    // console.log('move down', this.ids);
+    let wasMoved = false;
     const { size, field } = this;
     for (let i = 0; i < size; i++) {
       for (let j = size - 1; j >= 0; j--) {
@@ -216,7 +247,7 @@ export class Field {
             !next.wasMergedOnThisTurn 
           ) {
             p++;
-            
+            wasMoved = true;
             if (next && next.value === cell.value) {
               cell.mergeTarget = next;
               next.wasMergedOnThisTurn = true;
@@ -236,9 +267,10 @@ export class Field {
       }
     }
 
+    if (wasMoved) this.createRandomCell();    
     // this.deleteUnnecessary();
     this.resetMergedFlags();
-    console.log('field', field, this.toDelete);
+    // console.log('field', field, this.toDelete);
   }
 
 
@@ -250,7 +282,9 @@ export class Field {
   }
 
   resetMergedFlags() {
-    this.output.forEach(cell => cell.wasMergedOnThisTurn = false);
+    this.output.forEach(cell => (
+      cell.wasMergedOnThisTurn = false
+    ));
   }
 
 
