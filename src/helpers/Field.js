@@ -15,23 +15,32 @@ const switchCell = ({ field, rowIndex: i, colFromIndex: p, colToIndex, cell }) =
 export class Field {
 
   constructor(size = 4) {
-    this.state = { score: 6 };
     this.toDelete = [];
     this.size = size;
     this.field = Array.apply(null, { length: size })
-      .map(() => Array.apply(null, { length: size })
+    .map(() => Array.apply(null, { length: size })
       .map(() => ({})));
-    
-    this.ids = Array.apply(null, { length: size * size })
+      
+      this.ids = Array.apply(null, { length: size * size })
       .map((_, idx) => idx + 1);
-    
-    this.field[0][0] = { value: 2, x: 0, y: 0, key: this.ids.pop() };
-    this.field[0][2] = { value: 4, x: 2, y: 0, key: this.ids.pop() };
-    
-    this.moveDown = throttle(this._moveDown, throttleTime);
-    this.moveUp = throttle(this._moveUp, throttleTime);
-    this.moveLeft = throttle(this._moveLeft, throttleTime);
-    this.moveRight = throttle(this._moveRight, throttleTime);
+      
+      const value1 = random(1, 2) * 2;
+      const value2 = random(1, 2) * 2;
+      const x1 = random(0, 3);
+      const y1 = random(0, 3);
+      const x2 = random(0, 3);
+      let y2 = random(0, 3);
+      if (y2 === y1) y2 = y2 > 0 ? 0 : 1; 
+      
+      this.field[y1][x1] = { value: value1, x: x1, y: y1, key: this.ids.pop() };
+      this.field[y2][x2] = { value: value2, x: x2, y: y2, key: this.ids.pop() };
+      
+      this.moveDown = throttle(this._moveDown, throttleTime);
+      this.moveUp = throttle(this._moveUp, throttleTime);
+      this.moveLeft = throttle(this._moveLeft, throttleTime);
+      this.moveRight = throttle(this._moveRight, throttleTime);
+      
+      this.state = { score: value1 + value2 };
 
     this.output = this.field
       .reduce((acc, e) => (acc.push(...e), acc), [])

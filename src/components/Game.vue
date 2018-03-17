@@ -2,14 +2,28 @@
   <div
     tabindex="0"
     ref="gameField"
-    @keydown.right="f.moveRight()" 
-    @keydown.left="f.moveLeft()" 
-    @keydown.up="f.moveUp()" 
-    @keydown.down="f.moveDown()" 
+    @keydown.right="f.moveRight" 
+    @keydown.left="f.moveLeft" 
+    @keydown.up="f.moveUp" 
+    @keydown.down="f.moveDown"
+    @swipeleft="f.moveLeft" 
+    @swiperight="f.moveRight" 
+    @swipeup="f.moveUp" 
+    @swipedown="f.moveDown" 
     class="game-container">
-    <div class="game-info" @click="reset">
-      The Game {{ state.score }}
+    <div class="game-info">
+      ...
     </div>
+
+    <div class="nav">
+      <div class="actions">
+        <button class="btn" @click="reset">New game</button>
+      </div>
+      <div class="stats">
+        <div class="score">Score: <strong>{{ state.score }}</strong></div>
+      </div>
+    </div>
+
     <div class="game-container">
       <div class="active-cell-container">
         <Cell v-for="cell in field" :key="cell.key" :opts="cell" :onTransitionEnd="f.deleteUnnecessaryCells.bind(f)" />
@@ -76,7 +90,7 @@ export default {
 <style scoped>
   .game-container {
     max-width: 316px;
-    margin: 50px auto;  
+    margin: 25px auto;  
     position: relative;  
   }
 
@@ -90,5 +104,16 @@ export default {
 
   .active-cell-container {
     position: absolute;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stats {
+    color: rgba(255, 255, 255, .8);
+    font: 20px;
   }
 </style>

@@ -27,3 +27,13 @@ body {
   color: #fff;
   min-block-size: 100vh;
 }
+
+.btn {
+  background: rgba(255, 255, 255, .2);
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+
+  border: 0;
+  color: #fff;
+}
